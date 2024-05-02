@@ -1,253 +1,81 @@
 import React, { useEffect, useState } from "react";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import axios from "axios";
+import { Link } from 'react-router-dom';
 
-interface TableCell {
-  id: number;
-  checked: boolean;
-  name: string;
-  title: string;
-  email: string;
-  role: string;
-  status: number;
+const apiUrl = 'https://simobile.singapoly.com/api/trpl/customer-service';
+
+export const deleteRecord = (id_customer_service: number) => axios.delete(`${apiUrl}/${id_customer_service}`);
+
+function Heroicon(){
+  const [records, setRecords] = useState<any>([]);
+
+  useEffect(() => {
+    axios.get('https://simobile.singapoly.com/api/trpl/customer-service/1315051069')
+      .then(res => { setRecords(res.data.datas) })
+      .catch(err => console.log(err));
+  }, []);
+
+  const deleteRecords = (id_customer_service: number) => {
+    deleteRecord(id_customer_service)
+      .then(() => {
+        console.log(`Data dengan ID ${id_customer_service} telah dihapus`);
+        // Tambahkan logika lain yang diperlukan setelah penghapusan data
+      })
+      .catch(err => console.log(err));
+  };
+
+  return (
+    <div className="chart-container">
+      <Link to="/tambah">
+        <button>Tambah</button>
+      </Link>
+      <table className="styled-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>NIM</th>
+            <th>Title Issues</th>
+            <th>Descripting Issues</th>
+            <th>Rating</th>
+            <th>Image</th>
+            <th>Id Division</th>
+            <th>Id Priority</th>
+            <th>Division Department Name</th>
+            <th>Priority Name</th>
+            <th>Created at</th>
+            <th>Edited at</th>
+            <th>Deleted at</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {records && records.map((r : any, i : number)=> (
+            <tr key={i}>
+              <td>{r.id_customer_service}</td>
+              <td>{r.nim}</td>
+              <td>{r.title_issues}</td>
+              <td>{r.description_issues}</td>
+              <td>{r.rating}</td> 
+              <td>{r.image_url}</td> 
+              <td>{r.id_division_target}</td> 
+              <td>{r.id_priority}</td> 
+              <td>{r.division_department_name}</td>
+              <td>{r.priority_name}</td>
+              <td>{r.created_at}</td> 
+              <td>{r.edited_at}</td>
+              <td>{r.deleted_at}</td>  
+              <td>
+                <button onClick={() => deleteRecords(r.id_customer_service)}>Hapus</button>
+                <Link to={`/edit/${r.id_customer_service}`}>
+                  <button>Edit</button>
+                </Link>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
-const Base = () => {
-  const [tableData, setTableData] = useState<TableCell[]>([
-    {
-      id: 1,
-      checked: false,
-      name: "Leon",
-      title: "Full Stack",
-      email: "leon@example.com",
-      role: "member",
-      status: 1,
-    },
-    {
-      id: 2,
-      checked: false,
-      name: "Leon",
-      title: "Full Stack",
-      email: "leon@example.com",
-      role: "member",
-      status: 0,
-    },
-    {
-      id: 3,
-      checked: false,
-      name: "Leon",
-      title: "Full Stack",
-      email: "leon@example.com",
-      role: "member",
-      status: 1,
-    },
-    {
-      id: 4,
-      checked: false,
-      name: "Leon",
-      title: "Full Stack",
-      email: "leon@example.com",
-      role: "member",
-      status: 0,
-    },
-    {
-      id: 5,
-      checked: false,
-      name: "Leon",
-      title: "Full Stack",
-      email: "leon@example.com",
-      role: "member",
-      status: 1,
-    },
-    {
-      id: 6,
-      checked: false,
-      name: "Leon",
-      title: "Full Stack",
-      email: "leon@example.com",
-      role: "member",
-      status: 1,
-    },
-    {
-      id: 7,
-      checked: false,
-      name: "Leon",
-      title: "Full Stack",
-      email: "leon@example.com",
-      role: "member",
-      status: 1,
-    },
-    {
-      id: 8,
-      checked: false,
-      name: "Leon",
-      title: "Full Stack",
-      email: "leon@example.com",
-      role: "member",
-      status: 0,
-    },
-    {
-      id: 9,
-      checked: false,
-      name: "Leon",
-      title: "Full Stack",
-      email: "leon@example.com",
-      role: "member",
-      status: 0,
-    },
-    {
-      id: 10,
-      checked: false,
-      name: "Leon",
-      title: "Full Stack",
-      email: "leon@example.com",
-      role: "member",
-      status: 0,
-    },
-  ]);
-
-  const toggleAllCheck = (e: React.MouseEvent<HTMLInputElement>) => {
-    console.log((e.target as HTMLInputElement).checked);
-    const newTableData = tableData.map((v, i) => {
-      return { ...v, checked: (e.target as HTMLInputElement).checked };
-    });
-
-    setTableData(newTableData);
-  };
-
-  const handleCheckedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const target = e.target as HTMLInputElement;
-    const dataId = parseInt(target.dataset?.id as string);
-    const newTableData = tableData.map((v, i) => {
-      if (v.id === dataId) {
-        return { ...v, checked: (e.target as HTMLInputElement).checked };
-      }
-
-      return v;
-    });
-
-    setTableData(newTableData);
-  };
-  return (
-    <>
-      <div className="bg-white rounded shadow overflow-hidden">
-        <div className="flex justify-between items-center p-4">
-          <h1>Users</h1>
-          <button className="bg-indigo-600 rounded text-white px-4 py-2 text-sm">
-            Add User
-          </button>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-slate-50 border-b border-slate-200">
-              <tr className="text-slate-900 text-sm text-left">
-                <th className="px-4 py-3 font-medium rounded-tl-md">Name</th>
-                <th className="px-4 py-3 font-medium">Title</th>
-                <th className="px-4 py-3 font-medium">Email</th>
-                <th className="px-4 py-3 font-medium">Status</th>
-                <th className="px-4 py-3 font-medium">Role</th>
-                <th className="px-4 py-3 font-medium rounded-tr-md"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableData.map((v, i) => (
-                <tr
-                  className="odd:bg-white even:bg-slate-50 text-sm text-slate-900"
-                  key={i}
-                >
-                  <td className="px-4 py-3 whitespace-nowrap">{v.name}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{v.title}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{v.email}</td>
-                  <td className="px-4 py-3 whitespace-nowrap  text-xs font-medium">
-                    {v.status === 1 ? (
-                      <span className="bg-green-100 text-green-600 px-2 py-0.5 rounded-full">
-                        Active
-                      </span>
-                    ) : (
-                      <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full">
-                        InActive
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap">{v.role}</td>
-                  <td className="h-[44px] flex items-center gap-1">
-                    <PencilSquareIcon className="w-4 h-4 cursor-pointer" />
-                    <TrashIcon className="w-4 h-4 cursor-pointer" />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div className="bg-white rounded mt-4 shadow overflow-hidden">
-        <div className="flex justify-between items-center p-4">
-          <h1>Users</h1>
-          <button className="bg-indigo-600 rounded text-white px-4 py-2 text-sm">
-            Add User
-          </button>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-slate-50 border-b border-slate-200">
-              <tr className="text-slate-900 text-sm text-left">
-                <th className="px-4 py-3 text-left text-sm font-medium text-slate-900 rounded-tl-md">
-                  <input
-                    type="checkbox"
-                    className="rounded border-gray-400"
-                    onClick={toggleAllCheck}
-                  />
-                </th>
-                <th className="px-4 py-3 font-medium rounded-tl-md">Name</th>
-                <th className="px-4 py-3 font-medium">Title</th>
-                <th className="px-4 py-3 font-medium">Email</th>
-                <th className="px-4 py-3 font-medium">Status</th>
-                <th className="px-4 py-3 font-medium">Role</th>
-                <th className="px-4 py-3 font-medium rounded-tr-md"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableData.map((v, i) => (
-                <tr
-                  className="odd:bg-white even:bg-slate-50  text-sm text-slate-900"
-                  key={i}
-                >
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <input
-                      type="checkbox"
-                      className="rounded border-gray-400"
-                      checked={v.checked}
-                      onChange={handleCheckedChange}
-                      data-id={v.id}
-                    />
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap">{v.name}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{v.title}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{v.email}</td>
-                  <td className="px-4 py-3 whitespace-nowrap text-xs font-medium">
-                    {v.status === 1 ? (
-                      <span className="bg-green-100 text-green-600 px-2 py-0.5 rounded-full">
-                        Active
-                      </span>
-                    ) : (
-                      <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full">
-                        InActive
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap">{v.role}</td>
-                  <td className="h-[44px] flex items-center gap-1">
-                    <PencilSquareIcon className="w-4 h-4 cursor-pointer" />
-                    <TrashIcon className="w-4 h-4 cursor-pointer" />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </>
-  );
-};
-
-export default Base;
+export default Heroicon;

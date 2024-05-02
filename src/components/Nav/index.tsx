@@ -39,25 +39,33 @@ const Nav = () => {
           ],
         },
         {
-          name: "Tables",
+          name: "UTS",
           icon: <TableCellsIcon className="h-5 w-5 stroke-white" />,
           child: [
             {
-              name: "Basic Table",
+              name: "Customer Services",
               path: "tables/basic",
+            },
+            {
+              name: "Customer Services Edit",
+              path: "tables/edit",
+            },
+            {
+              name: "Customer Services Add",
+              path: "tables/tambah",
             },
           ],
         },
         {
-          name: "Charts",
+          name: "Master Menu",
           icon: <ChartPieIcon className="h-5 w-5 stroke-white" />,
           child: [
             {
-              name: "ApexCharts",
+              name: "Data Priorities",
               path: "charts/apex",
             },
             {
-              name: "Chart.js",
+              name: "Data Department",
               path: "charts/chartjs",
             },
           ],

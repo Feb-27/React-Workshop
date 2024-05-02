@@ -13,6 +13,8 @@ import NotFound from "../views/Errors/NotFound";
 import ServerError from "../views/Errors/ServerError";
 import SignUp from "../views/SignUp";
 import Heroicon from "../views/Icons/Heroicon";
+import EditModal from "../views/Tables/Edit";
+import AddModal from "../views/Tables/Add"; // Tambahkan import untuk halaman AddModal
 
 const Router = () => {
   return (
@@ -34,6 +36,12 @@ const Router = () => {
           </Route>
           <Route path="tables">
             <Route path="basic" element={<TableBasic />} />
+            <Route path="edit/:id" element={<EditModal id_customer_service={0} onClose={function (): void {
+              throw new Error("Function not implemented.");
+            } } />} /> {/* Rute untuk EditModal */}
+            <Route path="tambah" element={<AddModal onClose={function (): void {
+              throw new Error("Function not implemented.");
+            } } />} /> {/* Rute untuk AddModal */}
           </Route>
           <Route path="charts">
             <Route path="chartjs" element={<ChartJs />} />
